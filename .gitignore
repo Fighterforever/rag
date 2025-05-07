@@ -1,0 +1,85 @@
+# General
+*.log
+*.log.*
+*.swp
+*.swo
+*~
+*.bak
+*.tmp
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+graphrag-env/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor directories and files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.project
+.settings/
+.classpath
+nbproject/
+*.code-workspace
+.cursor/
+
+# Data and output directories (project-specific and general)
+telecom_kg/output/
+telecom_kg/data/
+telecom_kg/entities/
+telecom_kg/relationships/
+output/
+data/
+dataset/
+backups/
+test_output/
+_中国移动通信集团四川有限公司传输网络资源管理细则_chunks.json
+_中国移动通信集团四川有限公司传输网络资源管理细则_processed.md
+telecom_kg.log
+telecom_kg_report.md
+*.png
+*.pdf
+
+# Specific temporary files from telecom_kg
+telecom_kg/temp1.py
+telecom_kg/temp_fix.py
+telecom_kg/extractor.py.bak2 

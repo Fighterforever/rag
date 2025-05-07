@@ -1,0 +1,92 @@
+### 通信领域知识图谱构建系统配置 ###
+
+# LLM模型设置
+models:
+  default_chat_model:
+    type: openai_chat
+    api_key: "sk-cbac84a5cdd04b419acc313f495a7033"
+    model: "deepseek-reasoner"
+    encoding_model: cl100k_base
+    api_base: "https://api.deepseek.com/v1"
+    max_tokens: 8192
+    concurrent_requests: 1
+    tokens_per_minute: 20000
+    requests_per_minute: 20
+    max_retries: 10
+    sleep_on_rate_limit_recommendation: true
+
+  # 添加Qwen-Plus支持
+  qwen_plus:
+    name: "通义千问"
+    active: true
+    api_type: "openai_compatible"
+    api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    model: "qwen-plus"
+    api_key: "sk-de46e2e74abb46b697bad119294d7fdf"
+    max_tokens: 8192
+    concurrent_requests: 1
+    tokens_per_minute: 30000
+    requests_per_minute: 30
+    max_retries: 5
+    sleep_on_rate_limit_recommendation: true
+
+# 选择使用的模型 (对实体抽取和关系抽取保持一致)
+active_model: "default_chat_model"
+
+# Gemini Configuration (New)
+gemini:
+  api_key: "AIzaSyDwsKhXAXCi4OpC4AtcFaAUe8TSj-JyCww" # Your Gemini API Key
+  model_name: "gemini-2.5-pro-exp-03-25" # Use the specified experimental model
+  max_retries: 5 # Maximum number of retries for failed API calls
+
+# 文件路径设置
+paths:
+  input_dir: "/Users/rach/RAG/output"
+  output_dir: "/Users/rach/RAG/telecom_kg/output"
+  prompts_dir: "/Users/rach/RAG/telecom_kg/prompts"
+  cache_dir: "/Users/rach/RAG/telecom_kg/data/cache"
+  log_dir: "/Users/rach/RAG/telecom_kg/logs"  # 添加日志目录
+
+# 实体抽取配置
+entity_extraction:
+  prompt_template: "extract_entities.txt"
+  max_gleanings: 4  # 每个文本块的最大抽取次数
+
+# 关系抽取配置
+relationship_extraction:
+  prompt_template: "extract_relationships.txt"
+
+# 知识融合配置
+knowledge_fusion:
+  entity_alignment:
+    name_similarity_threshold: 0.85  # 实体名称相似度阈值
+    description_similarity_threshold: 0.75  # 实体描述相似度阈值
+    abbreviation_matching: true  # 启用缩写匹配
+  relationship_fusion:
+    similarity_threshold: 0.8  # 关系相似度阈值
+    conflict_resolution: "highest_confidence"  # 冲突解决策略：highest_confidence/latest/merge
+  inference_rules:
+    - name: "传递性规则"
+      pattern: "IF (A)-[组成关系]->(B) AND (B)-[组成关系]->(C) THEN (A)-[组成关系]->(C)"
+    - name: "逆关系规则"
+      pattern: "IF (A)-[包含]->(B) THEN (B)-[是一部分]->(A)"
+
+# Neo4j存储配置
+neo4j:
+  uri: "bolt://localhost:7687"
+  username: "neo4j"
+  password: "11111111"
+  database: "neo4j"
+
+# 处理参数
+processing:
+  batch_size: 10  # 批处理大小
+  parallel_workers: 4  # 并行处理线程数
+  cache_enabled: false  # 启用缓存
+  chunk_batch_size: 5  # 块级并行处理批次大小，控制同时处理的块数量
+
+# 日志配置
+logging:
+  level: "INFO"
+  max_file_size: 10485760  # 10MB
+  backup_count: 5  # 保留5个备份文件 

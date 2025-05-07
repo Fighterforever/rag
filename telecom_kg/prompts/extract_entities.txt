@@ -1,0 +1,38 @@
+# 实体抽取提示
+
+## 任务
+你是一个实体识别机器，需要识别出实体然后生成知识图谱以增强大模型的知识背景。请你阅读这个 markdown 文件（或文本块），然后以恰当的粒度帮我抽取全部的实体。
+
+## 输出格式要求
+严格按照以下 JSON 格式输出，每个实体一个 JSON 对象，所有对象包含在一个列表中：
+```json
+[
+  {
+    "entity_name": "实体名称",
+    "entity_type": "实体类型 (英文，Neo4j兼容)",
+    "entity_description": "实体详细描述",
+    "entity_aliases": ["别名1", "别名2"]
+  },
+  {
+    "entity_name": "另一个实体名称",
+    "entity_type": "另一个实体类型 (英文，Neo4j兼容)",
+    "entity_description": "另一个实体详细描述",
+    "entity_aliases": []
+  },
+  ...
+]
+```
+
+## 注意事项
+*   `entity_name`: 实体的规范名称。
+*   `entity_type`: 根据实体特征自行判断的最合适的类型。**请确保输出的类型是英文、驼峰式命名（CamelCase）或下划线命名（snake_case），并且不包含空格或其他特殊字符，以便与 Neo4j 兼容。** 例如：`ManagementStandard`, `NetworkResource`, `OrganizationUnit`。
+*   `entity_description`: 对实体的简洁描述。
+*   `entity_aliases`: 实体的其他称呼、缩写（如果存在）。
+*   确保抽取的全面性，不要遗漏关键实体。
+*   实体类型应保持合理和一致。
+*   至少输出100个实体。
+
+## 输入文本
+{input_text}
+
+## 输出实体列表 

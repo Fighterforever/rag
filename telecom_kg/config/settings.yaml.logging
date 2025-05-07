@@ -1,0 +1,157 @@
+### 通信领域知识图谱构建系统配置 ###
+
+# LLM模型设置
+models:
+  default_chat_model:
+    type: openai_chat
+    api_key: "sk-cbac84a5cdd04b419acc313f495a7033"
+    model: "deepseek-reasoner"
+1    encoding_model: cl100k_base
+    api_base: "https://api.deepseek.com/v1"
+    max_tokens: 8192
+    concurrent_requests: 1
+    tokens_per_minute: 20000
+    requests_per_minute: 20
+    max_retries: 10
+    sleep_on_rate_limit_recommendation: true
+
+  # 添加Qwen-Plus支持
+  qwen_plus:
+    name: "通义千问"
+    active: true
+    api_type: "openai_compatible"
+    api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    model: "qwen-plus"
+    api_key: "sk-de46e2e74abb46b697bad119294d7fdf"
+    max_tokens: 8192
+    concurrent_requests: 1
+    tokens_per_minute: 30000
+    requests_per_minute: 30
+    max_retries: 5
+    sleep_on_rate_limit_recommendation: true
+
+# 选择使用的模型 (对实体抽取和关系抽取保持一致)
+active_model: "default_chat_model"
+
+# Gemini Configuration (New)
+gemini:
+  api_key: "AIzaSyDwsKhXAXCi4OpC4AtcFaAUe8TSj-JyCww" # Your Gemini API Key
+  model_name: "gemini-2.5-pro-exp-03-25" # Use the specified experimental model
+  max_retries: 5 # Maximum number of retries for failed API calls
+
+# 文件路径设置
+paths:
+  input_dir: "/Users/rach/RAG/output"
+  output_dir: "/Users/rach/RAG/telecom_kg/output"
+  prompts_dir: "/Users/rach/RAG/telecom_kg/prompts"
+  cache_dir: "/Users/rach/RAG/telecom_kg/data/cache"
+  log_dir: "/Users/rach/RAG/telecom_kg/logs"  # 添加日志目录
+
+# 实体抽取配置
+entity_extraction:
+  prompt_template: "extract_entities.txt"
+  max_gleanings: 4  # 每个文本块的最大抽取次数
+  entity_types:
+    - name: "device"
+      description: "物理设备、网元、功能单元、板卡等硬件实体"
+      examples: ["OTN设备", "PTN设备", "SDH设备", "光传输网设备", "板卡", "子架"]
+    - name: "technology"
+      description: "关键技术、方法、算法、传输模式等"
+      examples: ["SDH技术", "OTN技术", "MPLS-TP", "WDM", "PON", "刚性管道", "弹性管道"]
+    - name: "protocol"
+      description: "通信协议、接口规范、消息格式等"
+      examples: ["STM-N接口", "GE接口", "10GE接口", "HTTP/2", "G.709"]
+    - name: "system"
+      description: "网络系统、管理平台、IT系统、解决方案等"
+      examples: ["Vc-OTN网络", "传输网", "SDH网", "PTN/SPN", "资管系统", "工建平台", "传输网管", "EOMS", "PBOSS"]
+    - name: "service"
+      description: "承载的业务、应用场景、服务模式等"
+      examples: ["TDM业务", "ToB-TDM业务", "ToB-IP业务", "VoLTE", "电路调度", "光路调度"]
+    - name: "standard"
+      description: "行业标准、公司规范、管理规定、细则等"
+      examples: ["传输网络资源管理细则", "技术规范", "G.709标准", "管理办法", "处分条例"]
+    - name: "concept"
+      description: "通用术语、抽象定义、基本概念模型等"
+      examples: ["时隙", "带宽", "转接点", "生命周期", "最小数据集", "扩展数据集"]
+    - name: "organization"
+      description: "公司内部的部门、外部单位等组织机构"
+      examples: ["中国移动通信集团四川有限公司网络部", "传输资源维护部门", "代维单位"]
+    - name: "resource"
+      description: "可管理、可调度的网络资源单元，包括逻辑和物理资源"
+      examples: ["传输内线资源", "传输管线资源", "纤芯", "管孔", "波道", "隧道", "伪线", "端口"]
+    - name: "metric"
+      description: "衡量标准、性能指标、质量要求等"
+      examples: ["完整率", "准确率", "使用率", "利用率", "网络时延", "可用率", "故障恢复时间"]
+    - name: "process_step"
+      description: "管理或业务流程中的具体步骤、活动或阶段"
+      examples: ["资源入网", "数据录入", "数据交维", "资源变更", "资源核查", "现场施工", "代维验收", "归档", "资源退网", "技术论证"]
+    - name: "location"
+      description: "地理位置、网络拓扑位置或设施点"
+      examples: ["光交接箱", "人手井", "电杆", "标石", "传输机房", "接入层", "汇聚层", "骨干层", "综合业务接入区", "微格"]
+    - name: "role"
+      description: "参与流程或承担责任的角色或人员类别"
+      examples: ["维护责任部门", "需求部门", "资源管理部门", "代维公司", "技术专家", "直接责任人"]
+    - name: "risk"
+      description: "识别出的风险点、潜在问题或负面影响"
+      examples: ["数据不准确", "数据更新不及时", "光缆故障点定位不准", "重大网络故障", "重要数据泄密"]
+    - name: "penalty"
+      description: "问责条款、处罚措施或处理方式"
+      examples: ["谈话", "批评教育", "书面检查", "通报批评", "经济处罚", "扣减考评分数", "取消考评资格", "移送司法机关"]
+
+# 关系抽取配置
+relationship_extraction:
+  prompt_template: "extract_relationships.txt"
+  relation_types:
+    - name: "组成关系"
+      description: "部分-整体关系"
+      examples: ["包含", "由...组成", "是...的一部分"]
+    - name: "功能关系"
+      description: "功能-实现关系"
+      examples: ["负责", "实现", "用于", "处理"]
+    - name: "交互关系"
+      description: "通信交互、数据流动"
+      examples: ["连接", "传输", "交互", "信令交换"]
+    - name: "演化关系"
+      description: "版本迭代、技术升级"
+      examples: ["升级为", "演进为", "替代", "基于"]
+    - name: "依赖关系"
+      description: "技术依赖、功能依赖"
+      examples: ["依赖", "需要", "基于", "运行在"]
+    - name: "管理关系"
+      description: "监控、维护、管理"
+      examples: ["管理", "监控", "维护", "配置"]
+
+# 知识融合配置
+knowledge_fusion:
+  entity_alignment:
+    name_similarity_threshold: 0.85  # 实体名称相似度阈值
+    description_similarity_threshold: 0.75  # 实体描述相似度阈值
+    abbreviation_matching: true  # 启用缩写匹配
+  relationship_fusion:
+    similarity_threshold: 0.8  # 关系相似度阈值
+    conflict_resolution: "highest_confidence"  # 冲突解决策略：highest_confidence/latest/merge
+  inference_rules:
+    - name: "传递性规则"
+      pattern: "IF (A)-[组成关系]->(B) AND (B)-[组成关系]->(C) THEN (A)-[组成关系]->(C)"
+    - name: "逆关系规则"
+      pattern: "IF (A)-[包含]->(B) THEN (B)-[是一部分]->(A)"
+
+# Neo4j存储配置
+neo4j:
+  uri: "bolt://localhost:7687"
+  username: "neo4j"
+  password: "11111111"
+  database: "neo4j"
+
+# 处理参数
+processing:
+  batch_size: 10  # 批处理大小
+  parallel_workers: 4  # 并行处理线程数
+  cache_enabled: false  # 启用缓存
+  chunk_batch_size: 5  # 块级并行处理批次大小，控制同时处理的块数量
+
+# 日志配置
+logging:
+  level: "INFO"
+  max_file_size: 10485760  # 10MB
+  backup_count: 5  # 保留5个备份文件 
